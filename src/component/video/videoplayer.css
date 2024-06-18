@@ -1,0 +1,8 @@
+input[type="checkbox"] {
+    accent-color:#F43F5E
+    }
+    .content_list:hover{
+        background-color: #3e3f3f;
+        cursor: pointer;;
+
+    }
