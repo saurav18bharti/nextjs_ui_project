@@ -89,7 +89,7 @@ const VideoPlayerDesign = () => {
       const progress =
         (videoRef.current.currentTime / videoRef.current.duration) * 100;
       setProgress(progress);
-      setCurrentTime(formatTime(videoRef.current.currentTime));
+      setCurrentTime(formatTime(videoRef.current.currentTime).toString());
 
       if (videoRef.current.currentTime == videoRef.current.duration) {
         setPlayStop(true);
@@ -112,7 +112,7 @@ const VideoPlayerDesign = () => {
   useEffect(() => {
     const videoElement = videoRef.current;
     if (videoElement) {
-      setDurationTime(formatTime(videoRef.current.duration));
+      setDurationTime(formatTime(videoRef.current.duration).toString());
       videoElement.addEventListener("timeupdate", controlProgressBar);
 
       return () => {
