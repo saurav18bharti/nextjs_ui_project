@@ -1,31 +1,21 @@
 [
-    {
-        "id":1,
-        "video_name":"Visão Geral do Curso Desenvolvimento Web",
-        "time":"14min"
-
-    },
-    {
-        "id":2,
-        "video_name":"Repositório do curso",
-        "time":"4min"
-
-    },
-    {
-        "id":3,
-        "video_name":"Boas práticas do suporte",
-        "time":"1min"
-
-    }, {
-        "id":4,
-        "video_name":"Lorem ipsum dolor sit amet, consectetur",
-        "time":"2min"
-
-    }, {
-        "id":5,
-        "video_name":"Terminais",
-        "time":"3min"
-
-    }
-
+  {
+    "id": 1,
+    "video_name": "Visão Geral do Curso Desenvolvimento Web",
+    "time": "14min",
+    "src": "/videos/video1.mp4"
+  },
+  {
+    "id": 2,
+    "video_name": "Repositório do curso",
+    "time": "4min",
+    "src": "/videos/video2.mp4"
+  },
+  {
+    "id": 3,
+    "video_name": "Boas práticas do suporte",
+    "time": "1min",
+    "src": "/videos/video3.mp4"
+  }
+ 
 ]

@@ -29,16 +29,18 @@ import { CircularProgress, Progress } from "@nextui-org/progress";
 const VideoPlayerDesign = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLVideoElement>(null);
-  const [playstop, setPlayStop] = useState<boolean>(true);
-  const [controlSound, setControlSound] = useState<boolean>(true);
+  const [playstop, setPlayStop] = useState<boolean>(false);
+  const [controlSound, setControlSound] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
   const [currenttime, setCurrentTime] = useState<string>("0:00");
   const [durationTime, setDurationTime] = useState<string>("0:00");
+  const [videosource,setVideoSource]=useState<string>("/videos/video1.mp4");
+  const [listvideo,setListVideo]=useState<boolean>(false);
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     const t = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-    console.log({ time, t }, "in format time fnc");
+    // console.log({ time, t }, "in format time fnc");
     return t;
   };
 
@@ -90,7 +92,7 @@ const VideoPlayerDesign = () => {
     }
   };
 
-  const handleProgressClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleProgressClick = (event: React.MouseEvent<HTMLDivElement>):void => {
     const progressBar = progressBarRef.current;
     const videoElement = videoRef.current;
 
@@ -101,6 +103,16 @@ const VideoPlayerDesign = () => {
       videoElement.currentTime = newTime;
     }
   };
+
+  const handleNewVideo=(src:string):void=>{
+     setListVideo(true);
+    if(videoRef.current){
+        videoRef.current.src=src;
+        videoRef.current.load();
+        videoRef.current.play();
+    }
+
+  }
 
   useEffect(() => {
     const controlProgressBar = () => {
@@ -137,6 +149,7 @@ const VideoPlayerDesign = () => {
         <div className=" bg-video_controller_color border-[2px] border-solid border-black border-opacity-45 p-3 flex-grow">
           <div className="player flex items-center justify-center cursor-pointer ">
             <video
+            
               onLoadedMetadata={(e) => {
                 if (e.target) {
                   //@ts-ignore
@@ -150,8 +163,10 @@ const VideoPlayerDesign = () => {
               ref={videoRef}
               width={750}
               className="flex-grow"
+              // autoPlay
+              // muted
             >
-              <source src="/videos/video.mp4" type="video/mp4" />
+              <source src={videosource ? videosource:"/videos/video.mp4"} type="video/mp4" />
             </video>
           </div>
           <div className="multiple_player_icon flex items-center justify-between w-video_controller_width pt-1 ">
@@ -258,9 +273,13 @@ const VideoPlayerDesign = () => {
               <div
                 key={content.id}
                 className=" content_list flex justify-between px-4 py-4 text-aprenda_text_color text-[14px] cursor-pointer "
+                onClick={()=>handleNewVideo(content?.src)}
               >
                 <div className="flex items-center  gap-3 flex-grow ">
-                  <FaPlay />
+                 {
+                  listvideo ? <IoStop/>: <FaPlay />
+
+                 }
                   {content.id}
                   {".  "}
                   {content.video_name}
