@@ -122,7 +122,6 @@ const VideoPlayerDesign = () => {
       console.log(videoElement, "inside");
       const t = formatTime(videoRef.current.duration);
       const tt = t.toString();
-      console.log({ time: videoRef.current.duration, t, tt }, "inside");
       setDurationTime(tt);
       videoElement.addEventListener("timeupdate", controlProgressBar);
 
@@ -137,7 +136,21 @@ const VideoPlayerDesign = () => {
       <div className=" flex gap-3 justify-center items-center">
         <div className=" bg-video_controller_color border-[2px] border-solid border-black border-opacity-45 p-3 flex-grow">
           <div className="player flex items-center justify-center cursor-pointer ">
-            <video ref={videoRef} width={750} className="flex-grow">
+            <video
+              onLoadedMetadata={(e) => {
+                if (e.target) {
+                  //@ts-ignore
+                  const t = formatTime(e.target.duration);
+                  const tt = t.toString();
+                  //@ts-ignore
+                  console.log({ time: e.target.duration, t, tt }, "inside");
+                  setDurationTime(tt);
+                }
+              }}
+              ref={videoRef}
+              width={750}
+              className="flex-grow"
+            >
               <source src="/videos/video.mp4" type="video/mp4" />
             </video>
           </div>
