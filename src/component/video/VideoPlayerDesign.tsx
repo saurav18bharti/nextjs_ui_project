@@ -37,7 +37,9 @@ const VideoPlayerDesign = () => {
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    const t = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    console.log({ time, t }, "in format time fnc");
+    return t;
   };
 
   // useEffect(() => {
@@ -115,10 +117,13 @@ const VideoPlayerDesign = () => {
     };
 
     const videoElement = videoRef.current;
-    console.log(videoElement,"outside")
+    console.log(videoElement, "outside");
     if (videoElement) {
-      console.log(videoElement,"inside")
-      setDurationTime(formatTime(videoRef.current.duration).toString());
+      console.log(videoElement, "inside");
+      const t = formatTime(videoRef.current.duration);
+      const tt = t.toString();
+      console.log({ t, tt }, "inside");
+      setDurationTime(tt);
       videoElement.addEventListener("timeupdate", controlProgressBar);
 
       return () => {
