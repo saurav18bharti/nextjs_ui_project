@@ -40,9 +40,9 @@ const VideoPlayerDesign = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  useEffect(() => {
-    console.log(videoRef, "videoref");
-  }, []);
+  // useEffect(() => {
+  //   console.log(videoRef, "videoref");
+  // }, []);
 
   const playVideo = () => {
     if (videoRef.current && playstop) {
@@ -115,8 +115,9 @@ const VideoPlayerDesign = () => {
     };
 
     const videoElement = videoRef.current;
-    // console.log(videoElement, "duration time");
+    console.log(videoElement,"outside")
     if (videoElement) {
+      console.log(videoElement,"inside")
       setDurationTime(formatTime(videoRef.current.duration).toString());
       videoElement.addEventListener("timeupdate", controlProgressBar);
 
