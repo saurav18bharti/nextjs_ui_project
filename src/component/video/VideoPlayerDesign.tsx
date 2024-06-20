@@ -1,15 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import back from "../../assets/videoicon/back.svg";
-import play from "../../assets/videoicon/play.svg";
 import forward from "../../assets/videoicon/forward.svg";
-import timing from "../../assets/videoicon/timing.svg";
-import sound from "../../assets/videoicon/sound.svg";
 import setting from "../../assets/videoicon/setting.svg";
 import resizer from "../../assets/videoicon/resizer.svg";
-import pause from "../../assets/videoicon/pause.svg";
-import soundcontrol from "../../assets/videoicon/soundcontrol.svg";
-import circle25 from "../../assets/videoicon/circle25.svg";
 import dropdown from "../../assets/videoicon/dropdown.svg";
 import Image from "next/image";
 import aprendadata from "../video/aprenda.json";
@@ -22,20 +16,31 @@ import { PiSpeakerSimpleHighFill } from "react-icons/pi";
 import { PiSpeakerSimpleXFill } from "react-icons/pi";
 
 //progress bar
-
-import { normalize } from "path";
 import { CircularProgress, Progress } from "@nextui-org/progress";
+import { AppContext } from "@/context/context";
 
 const VideoPlayerDesign = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLVideoElement>(null);
-  const [playstop, setPlayStop] = useState<boolean>(false);
-  const [controlSound, setControlSound] = useState<boolean>(false);
+  // const [playstop, setPlayStop] = useState<boolean>(true);
+  const [controlSound, setControlSound] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
   const [currenttime, setCurrentTime] = useState<string>("0:00");
   const [durationTime, setDurationTime] = useState<string>("0:00");
-  const [videosource,setVideoSource]=useState<string>("/videos/video1.mp4");
-  const [listvideo,setListVideo]=useState<boolean>(false);
+  const [isloading, setIsloading] = useState<boolean>(false);
+
+  /// usecontext
+  const {
+    id,
+    setId,
+    videoList,
+    setVideoList,
+    currentVideoIndex,
+    playNextVideo,
+    playstopvideo,
+    setPlayStopVideo,
+  } = useContext(AppContext);
+
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -44,21 +49,30 @@ const VideoPlayerDesign = () => {
     return t;
   };
 
-  // useEffect(() => {
-  //   console.log(videoRef, "videoref");
-  // }, []);
+  useEffect(() => {
+    setVideoList(aprendadata);
+  }, [setVideoList]);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.src = videoList[currentVideoIndex]?.src || "";
+      videoElement.load();
+      videoElement.play();
+    }
+  }, [currentVideoIndex, videoList]);
 
   const playVideo = () => {
-    if (videoRef.current && playstop) {
+    if (videoRef.current && playstopvideo) {
       videoRef.current.play();
-      setPlayStop(false);
+      setPlayStopVideo(false);
     }
   };
 
   const pauseVideo = () => {
     if (videoRef.current) {
       videoRef.current.pause();
-      setPlayStop(true);
+      setPlayStopVideo(true);
     }
   };
 
@@ -92,7 +106,9 @@ const VideoPlayerDesign = () => {
     }
   };
 
-  const handleProgressClick = (event: React.MouseEvent<HTMLDivElement>):void => {
+  const handleProgressClick = (
+    event: React.MouseEvent<HTMLDivElement>
+  ): void => {
     const progressBar = progressBarRef.current;
     const videoElement = videoRef.current;
 
@@ -104,15 +120,16 @@ const VideoPlayerDesign = () => {
     }
   };
 
-  const handleNewVideo=(src:string):void=>{
-     setListVideo(true);
-    if(videoRef.current){
-        videoRef.current.src=src;
-        videoRef.current.load();
-        videoRef.current.play();
+  const handleNewVideo = (src: string, id: number): void => {
+    setId(id);
+    setPlayStopVideo(false);
+    if (videoRef.current) {
+      videoRef.current.src = src;
+      setIsloading(true);
+      videoRef.current.load();
+      videoRef.current.play();
     }
-
-  }
+  };
 
   useEffect(() => {
     const controlProgressBar = () => {
@@ -123,13 +140,12 @@ const VideoPlayerDesign = () => {
         setCurrentTime(formatTime(videoRef.current.currentTime).toString());
 
         if (videoRef.current.currentTime === videoRef.current.duration) {
-          setPlayStop(true);
+          setPlayStopVideo(true);
         }
       }
     };
 
     const videoElement = videoRef.current;
-    console.log(videoElement, "outside");
     if (videoElement) {
       console.log(videoElement, "inside");
       const t = formatTime(videoRef.current.duration);
@@ -141,7 +157,7 @@ const VideoPlayerDesign = () => {
         videoElement.removeEventListener("timeupdate", controlProgressBar);
       };
     }
-  }, []);
+  }, [setPlayStopVideo]);
 
   return (
     <div className="main_container_video_player mx-80 mt-4  ">
@@ -149,7 +165,6 @@ const VideoPlayerDesign = () => {
         <div className=" bg-video_controller_color border-[2px] border-solid border-black border-opacity-45 p-3 flex-grow">
           <div className="player flex items-center justify-center cursor-pointer ">
             <video
-            
               onLoadedMetadata={(e) => {
                 if (e.target) {
                   //@ts-ignore
@@ -158,16 +173,22 @@ const VideoPlayerDesign = () => {
                   //@ts-ignore
                   console.log({ time: e.target.duration, t, tt }, "inside");
                   setDurationTime(tt);
+                  setIsloading(false);
                 }
               }}
+              onWaiting={() => setIsloading(true)}
               ref={videoRef}
               width={750}
               className="flex-grow"
+              onEnded={playNextVideo}
               // autoPlay
               // muted
             >
-              <source src={videosource ? videosource:"/videos/video.mp4"} type="video/mp4" />
+              <source src="/videos/video1.mp4" type="video/mp4" />
             </video>
+            {isloading && (
+              <CircularProgress className="absolute" aria-label="Loading..." />
+            )}
           </div>
           <div className="multiple_player_icon flex items-center justify-between w-video_controller_width pt-1 ">
             <div className="control_button flex gap-3 flex-grow justify-center">
@@ -177,7 +198,7 @@ const VideoPlayerDesign = () => {
                 className="text-[14px] cursor-pointer"
                 onClick={skipBackward}
               />
-              {playstop ? (
+              {playstopvideo ? (
                 <FaPlay
                   onClick={playVideo}
                   className="text-[15px] cursor-pointer text-white"
@@ -273,13 +294,10 @@ const VideoPlayerDesign = () => {
               <div
                 key={content.id}
                 className=" content_list flex justify-between px-4 py-4 text-aprenda_text_color text-[14px] cursor-pointer "
-                onClick={()=>handleNewVideo(content?.src)}
+                onClick={() => handleNewVideo(content?.src, content?.id)}
               >
                 <div className="flex items-center  gap-3 flex-grow ">
-                 {
-                  listvideo ? <IoStop/>: <FaPlay />
-
-                 }
+                  {id === content.id ? <IoStop /> : <FaPlay />}
                   {content.id}
                   {".  "}
                   {content.video_name}
