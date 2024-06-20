@@ -122,7 +122,7 @@ const VideoPlayerDesign = () => {
       console.log(videoElement, "inside");
       const t = formatTime(videoRef.current.duration);
       const tt = t.toString();
-      console.log({ t, tt }, "inside");
+      console.log({ time: videoRef.current.duration, t, tt }, "inside");
       setDurationTime(tt);
       videoElement.addEventListener("timeupdate", controlProgressBar);
 
