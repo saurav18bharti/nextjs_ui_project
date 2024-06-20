@@ -40,6 +40,10 @@ const VideoPlayerDesign = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  useEffect(() => {
+    console.log(videoRef, "videoref");
+  }, []);
+
   const playVideo = () => {
     if (videoRef.current && playstop) {
       videoRef.current.play();
@@ -84,19 +88,6 @@ const VideoPlayerDesign = () => {
     }
   };
 
-  const controlProgressBar = () => {
-    if (videoRef.current) {
-      const progress =
-        (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(progress);
-      setCurrentTime(formatTime(videoRef.current.currentTime).toString());
-
-      if (videoRef.current.currentTime == videoRef.current.duration) {
-        setPlayStop(true);
-      }
-    }
-  };
-
   const handleProgressClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const progressBar = progressBarRef.current;
     const videoElement = videoRef.current;
@@ -110,7 +101,21 @@ const VideoPlayerDesign = () => {
   };
 
   useEffect(() => {
+    const controlProgressBar = () => {
+      if (videoRef.current) {
+        const progress =
+          (videoRef.current.currentTime / videoRef.current.duration) * 100;
+        setProgress(progress);
+        setCurrentTime(formatTime(videoRef.current.currentTime).toString());
+
+        if (videoRef.current.currentTime === videoRef.current.duration) {
+          setPlayStop(true);
+        }
+      }
+    };
+
     const videoElement = videoRef.current;
+    // console.log(videoElement, "duration time");
     if (videoElement) {
       setDurationTime(formatTime(videoRef.current.duration).toString());
       videoElement.addEventListener("timeupdate", controlProgressBar);
@@ -207,17 +212,17 @@ const VideoPlayerDesign = () => {
         <div className="aprenda h-aprenda_height w-aprenda_width bg-video_controller_color flex-grow">
           <div className="aprenda_a_programmer bg-aprenda_a_programmer px-3 py-3 flex items-center justify-between">
             <div className="aprenda_a_programmr_text flex items-center gap-3">
-            <CircularProgress
-          classNames={{
-            svg: "w-20 h-20 drop-shadow-md",
-            indicator: "stroke-white",
-            track: "stroke-white/10",
-            value: "text-[14px] text-white",
-          }}
-          value={70}
-          strokeWidth={3}
-          showValueLabel={true}
-        />
+              <CircularProgress
+                classNames={{
+                  svg: "w-20 h-20 drop-shadow-md",
+                  indicator: "stroke-white",
+                  track: "stroke-white/10",
+                  value: "text-[14px] text-white",
+                }}
+                value={70}
+                strokeWidth={3}
+                showValueLabel={true}
+              />
               <div className="aprenda_a_programmer_text_2 text-[17px] text-aprenda_text_color font-normal ">
                 <p className="text-[14px]">Aprenda a programar</p>
                 <span className="flex gap-2 text-[14px]">
@@ -236,10 +241,10 @@ const VideoPlayerDesign = () => {
                 className=" content_list flex justify-between px-4 py-4 text-aprenda_text_color text-[14px] cursor-pointer "
               >
                 <div className="flex items-center  gap-3 flex-grow ">
-                 <FaPlay/>
+                  <FaPlay />
                   {content.id}
                   {".  "}
-                   {content.video_name}
+                  {content.video_name}
                 </div>
                 <p className="flex-grow text-end ">{content.time}</p>
               </div>
