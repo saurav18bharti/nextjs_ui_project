@@ -17,7 +17,7 @@ import { PiSpeakerSimpleXFill } from "react-icons/pi";
 
 //progress bar
 import { CircularProgress, Progress } from "@nextui-org/progress";
-import { AppContext } from "@/context/context";
+import { useAppContext } from "@/context/context";
 
 const VideoPlayerDesign = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -39,7 +39,7 @@ const VideoPlayerDesign = () => {
     playNextVideo,
     playstopvideo,
     setPlayStopVideo,
-  } = useContext(AppContext);
+  } = useAppContext();
 
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);

@@ -1,5 +1,5 @@
 "use client"
-import { Dispatch, ReactNode, SetStateAction, createContext, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
 type AppContextT = {
   id: number;
   setId: Dispatch<SetStateAction<number>>;
@@ -12,7 +12,7 @@ type AppContextT = {
   playNextVideo:()=>void;
 };
 
-export const AppContext = createContext<AppContextT | null>(null);
+ const AppContext = createContext({} as AppContextT );
 
 type AppContextProviderProps = {
   children: ReactNode;
@@ -38,3 +38,7 @@ export const VideoPlayerProvider = ({ children }: AppContextProviderProps) => {
     <AppContext.Provider value={{ id, setId ,videoList, setVideoList, currentVideoIndex, setCurrentVideoIndex, playNextVideo,playstopvideo,setPlayStopVideo}}>{children}</AppContext.Provider>
   );
 };
+
+export function useAppContext(){
+  return useContext(AppContext);
+}
